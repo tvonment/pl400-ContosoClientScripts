@@ -11,6 +11,25 @@ ContosoPermit.Scripts.PermitForm = {
         console.log('on change - permit type');
         ContosoPermit.Scripts.PermitForm._handlePermitTypeSettings(executionContext);
     },
+    lockPermit: function (primaryControl) {
+        formContext = primaryControl;
+        var PermitID = formContext.data.entity.getId().replace('{', '').replace('}', '');
+        var lockPermitRequest = new ContosoPermit.Scripts.PermitForm._lockPermitRequest(PermitID, "Admin Lock");
+        // Use the request object to execute the function
+        Xrm.WebApi.online.execute(lockPermitRequest).then(
+            function (result) {
+                if (result.ok) {
+                    console.log("Status: %s %s", result.status, result.statusText);
+                    // perform other operations as required;
+                    formContext.ui.setFormNotification("Status " + result.status, "INFORMATION");
+                }
+            },
+            function (error) {
+                console.log(error.message);
+                // handle error conditions
+            }
+        );
+    },
     _handlePermitTypeSettings: function (executionContext) {
         var formContext = executionContext.getFormContext();
         var permitType = formContext.getAttribute("contoso_permittype").getValue();
@@ -56,25 +75,6 @@ ContosoPermit.Scripts.PermitForm = {
                 operationName: "contoso_LockPermit",
             };
         };
-    },
-    lockPermit: function (primaryControl) {
-        formContext = primaryControl;
-        var PermitID = formContext.data.entity.getId().replace('{', '').replace('}', '');
-        var lockPermitRequest = new ContosoPermit.Scripts.PermitForm._lockPermitRequest(PermitID, "Admin Lock");
-        // Use the request object to execute the function
-        Xrm.WebApi.online.execute(lockPermitRequest).then(
-            function (result) {
-                if (result.ok) {
-                    console.log("Status: %s %s", result.status, result.statusText);
-                    // perform other operations as required;
-                    formContext.ui.setFormNotification("Status " + result.status, "INFORMATION");
-                }
-            },
-            function (error) {
-                console.log(error.message);
-                // handle error conditions
-            }
-        );
     },
     __namespace: true
 }
