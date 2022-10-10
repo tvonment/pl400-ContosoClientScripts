@@ -16,6 +16,8 @@ ContosoPermit.Scripts.PermitForm = {
         var permitType = formContext.getAttribute("contoso_permittype").getValue();
         if (permitType == null) {
             formContext.ui.tabs.get("inspectionsTab").setVisible(false);
+            formContext.getAttribute("contoso_newsize").setRequiredLevel("none");
+            formContext.ui.controls.get("contoso_newsize").setVisible(false);
             return;
         } else {
             var permitTypeID = permitType[0].id;
@@ -24,6 +26,13 @@ ContosoPermit.Scripts.PermitForm = {
                     formContext.ui.tabs.get("inspectionsTab").setVisible(true);
                 } else {
                     formContext.ui.tabs.get("inspectionsTab").setVisible(false);
+                }
+                if (result.contoso_requiresize) {
+                    formContext.ui.controls.get("contoso_newsize").setVisible(true);
+                    formContext.getAttribute("contoso_newsize").setRequiredLevel("required");
+                } else {
+                    formContext.getAttribute("contoso_newsize").setRequiredLevel("none");
+                    formContext.ui.controls.get("contoso_newsize").setVisible(false);
                 }
             }, function (error) { alert('Error:' + error.message) });
         }
