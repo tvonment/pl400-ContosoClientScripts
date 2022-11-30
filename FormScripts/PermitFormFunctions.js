@@ -32,38 +32,38 @@ ContosoPermit.Scripts.PermitForm = {
     },
     _handlePermitTypeSettings: function (executionContext) {
         var formContext = executionContext.getFormContext();
-        var permitType = formContext.getAttribute("contoso_permittype").getValue();
+        var permitType = formContext.getAttribute("tvm_permittype").getValue();
         if (permitType == null) {
             formContext.ui.tabs.get("inspectionsTab").setVisible(false);
-            formContext.getAttribute("contoso_newsize").setRequiredLevel("none");
-            formContext.ui.controls.get("contoso_newsize").setVisible(false);
+            formContext.getAttribute("tvm_newsize").setRequiredLevel("none");
+            formContext.ui.controls.get("tvm_newsize").setVisible(false);
             return;
         } else {
             var permitTypeID = permitType[0].id;
-            Xrm.WebApi.retrieveRecord("contoso_permittype", permitTypeID).then(function (result) {
-                if (result.contoso_requireinspections) {
+            Xrm.WebApi.retrieveRecord("tvm_permittype", permitTypeID).then(function (result) {
+                if (result.tvm_requireinspections) {
                     formContext.ui.tabs.get("inspectionsTab").setVisible(true);
                 } else {
                     formContext.ui.tabs.get("inspectionsTab").setVisible(false);
                 }
-                if (result.contoso_requiresize) {
-                    formContext.ui.controls.get("contoso_newsize").setVisible(true);
-                    formContext.getAttribute("contoso_newsize").setRequiredLevel("required");
+                if (result.tvm_requiresize) {
+                    formContext.ui.controls.get("tvm_newsize").setVisible(true);
+                    formContext.getAttribute("tvm_newsize").setRequiredLevel("required");
                 } else {
-                    formContext.getAttribute("contoso_newsize").setRequiredLevel("none");
-                    formContext.ui.controls.get("contoso_newsize").setVisible(false);
+                    formContext.getAttribute("tvm_newsize").setRequiredLevel("none");
+                    formContext.ui.controls.get("tvm_newsize").setVisible(false);
                 }
             }, function (error) { alert('Error:' + error.message) });
         }
     },
     _lockPermitRequest: function (permitID, reason) {
-        this.entity = { entityType: "contoso_permit", id: permitID };
+        this.entity = { entityType: "tvm_permit", id: permitID };
         this.Reason = reason;
         this.getMetadata = function () {
             return {
                 boundParameter: "entity", parameterTypes: {
                     "entity": {
-                        typeName: "mscrm.contoso_permit",
+                        typeName: "mscrm.tvm_permit",
                         structuralProperty: 5
                     },
                     "Reason": {
@@ -72,7 +72,7 @@ ContosoPermit.Scripts.PermitForm = {
                     }
                 },
                 operationType: 0, // This is an action. Use '1' for functions and '2' for CRUD
-                operationName: "contoso_LockPermit",
+                operationName: "tvm_LockPermit",
             };
         };
     },
